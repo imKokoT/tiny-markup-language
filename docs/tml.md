@@ -77,7 +77,6 @@ a = 123; b = 321
 ## Data types
 - Bool -> boolean type
 - Numeric -> numeric type
-- Float -> float point type
 - String -> string type
 - List -> dynamic list
 - Object -> object of variables
