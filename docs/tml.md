@@ -3,6 +3,7 @@
 - [Base Syntax](#base-syntax)
     - [Comments](#comments)
     - [Variable definition](#variable-definition)
+    - [Indentation](#indentation)
     - [Semi](#semi)
 - [Data types](#data-types)
     - [String](#string)
@@ -59,9 +60,13 @@ _test = 0    # parse error
 > [!NOTE]
 > Repeating variables is allowed and its value will set by last one
 
+### Indentation
+
+To separate variables between, use newline symbol `\n`. Important to use same indentation for all levels using same symbol of space ` ` or tab `\t`.
+
 ### Semi
 
-Variables are separated with new line symbol `\n`, but you can separate with `;`
+Variables are separated with newline symbol `\n`, but you can separate with `;`
 
 Example:
 ```tml
