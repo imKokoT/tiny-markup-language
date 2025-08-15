@@ -1,15 +1,33 @@
 # TML standard v1.0
 
 - [Base Syntax](#base-syntax)
+    - [Comments](#comments)
+    - [Variable definition](#variable-definition)
+    - [Semi](#semi)
 - [Data types](#data-types)
+    - [String](#string)
+    - [Object](#object)
+    - [List](#list)
 
 ## Base Syntax
 
 The syntax mostly inspired by [YAML](https://yaml.org) and [JSON](https://www.json.org/json-en.html), but the main point is to make it more easier to understand, use a stricter format. Other important point is serialized data length: as shorter as possible, while maintaining human-readability.
 
+The **root object** from variant of [data types](#data-types) detects by entry syntax. Entry syntax for [*Object*](#object) simplified:
+```tml
+a = 123
+b = the fast brown fox jumps over the lazy dog.
+
+# same as
+# {
+#   a = 123
+#   b = the fast brown fox jumps over the lazy dog.
+# } 
+```
+
 ### Comments
 
-Comments starts from '#' symbol. If '#' found, all symbols after it will be ignored.
+Comments starts from '#' symbol. If '#' found, all next symbols will be ignored.
 Example:
 ```tml
 var = 'abc' # the comment
@@ -17,8 +35,7 @@ var = 'abc' # the comment
 
 ### Variable definition
 
-Variable can be defined at Object with next syntax:
-	[name]=[value]
+Variable can be defined at [*Object*](#object) with next syntax: `[name]=[value]`
 
 Example:
 ```tml
@@ -63,14 +80,12 @@ a = 123; b = 321
 
 Example:
 ```tml
-boolean = true # false or T or F
-numeric = 12345
-float = 12345.6789 
-null_type = null # or nothing
-string = 'string'
+boolean = true       # `false` or `T` or `F`
+numeric = 12345.6789 # also possible -.123, 123e10 etc
+string = 'string'    # see more in doc about formatting
 list = [1,2,3,4,5]
 object = {x=0;y=0}
-null_type = null # or nothing
+null_type = null     # or nothing
 ```
 
 ### String
@@ -118,7 +133,7 @@ Example:
 ```tml
 # in braces
 vector = {x=0; y=0} # inline
-person = { # multiline, lines separate by newline
+person = {          # multiline, lines separate by newline
     name = Bob
     age = 21
     zip = 43123
@@ -142,7 +157,8 @@ List contains any objects and separate by `,` symbol.
 Example:
 ```tml
 list = [
-    T, F, null,, # two commas also null
+    true, false, T, F, 
+    null,, # two commas also null
     123,
     3.14,
     text,
