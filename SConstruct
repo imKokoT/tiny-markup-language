@@ -15,7 +15,10 @@ CXX_STANDARD = 'c++17'
 
 # --- OPTIONS -------------------------------------------------------------------------------------
 debug = ARGUMENTS.get('debug', OFF) == ON
-optimize = ARGUMENTS.get('debug', OFF) == ON  # only release
+# only release
+optimize = ARGUMENTS.get('debug', OFF) == ON
+# experimental/devtools
+debug_test = ARGUMENTS.get('debug_test', OFF) == ON # if ON will build tests/debug.cpp
 
 
 # --- CREATE ENVIRONMENT --------------------------------------------------------------------------
@@ -35,7 +38,8 @@ src = Glob('build/obj/tml/*.cpp')
 
 # --- SCAN TESTS ----------------------------------------------------------------------------------
 VariantDir('build/obj/tests', 'tests', duplicate=0)
-tests_src = Glob('build/obj/tests/*.cpp')
+testrunner_src = ['build/obj/tests/testrunner.cpp']
+debug_src = ['build/obj/tests/debug.cpp']
 
 # --- BUILD ---------------------------------------------------------------------------------------
 if debug:
@@ -43,8 +47,10 @@ if debug:
     lib = env.StaticLibrary(target=f'build/bin/{OUTPUT_NAME}-debug', source=src)
     dll = env.SharedLibrary(target=f'build/bin/{OUTPUT_NAME}-debug', source=src)
 
-    # test
-    env.Program(target=f'build/bin/testrunner', source=tests_src, LIBS=[lib], LIBPATH=["#src"])
+    # tests
+    if debug_test:
+        env.Program(target=f'build/bin/debug', source=debug_src, LIBS=[lib], LIBPATH=['#src'])
+    env.Program(target=f'build/bin/testrunner', source=testrunner_src, LIBS=[lib], LIBPATH=["#src"])
 else:
     raise NotImplementedError()
     app = env.Program(target=f'build/bin/{OUTPUT_NAME}-{VERSION_MAJOR}.{VERSION_MINOR}', source=obj)
