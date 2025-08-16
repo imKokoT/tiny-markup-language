@@ -127,7 +127,23 @@ TML allows next escape codes:
 - `\e` -> escape code char
 - `\,` -> `,`
 
-TML supports multiline *String* syntax but with limitations.
+TML supports multiline *String* syntax but with limitations. Multiline string uses indents  
+
+Example:
+```tml
+multiline = "           # open quote; its indent - start pos for string lines
+            line 1
+            line 2
+                - point
+                - point
+                - point
+            line 6
+            "           # close quote should be same indent as first
+
+bad-multiline = "line 1    # parse error
+            line 2         # parse error
+                line 3"    # parse error
+```
 
 ### Object
 
