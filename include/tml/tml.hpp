@@ -1,3 +1,4 @@
 #pragma once
+#include "config.hpp"
 
-int sum(int a, int b);
+TML_API int sum(int a, int b);
