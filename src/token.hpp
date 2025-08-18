@@ -2,7 +2,21 @@
 #include"config.hpp"
 
 enum class TokenType {
-
+    End,        // semi or \n
+    Identifier,
+    Eq,         // =
+    Colon,      // :
+    Coma,       // ,
+    
+    LBrace, RBrace,     // { }
+    LBracket, RBracket, // [ ]
+    LQuote, RQuote,     // quotes
+    
+    Null,
+    True, False,
+    Integer,
+    Float,
+    StringBody
 };
 
 struct Token {
@@ -11,6 +25,6 @@ struct Token {
     wchar* value;
 
     Token(TokenType token, int64 line, int64 col);
-    Token(TokenType token, int64 line, int64 col, wchar* value);
+    Token(TokenType token, int64 line, int64 col, const wchar* value);
     ~Token();
 };
