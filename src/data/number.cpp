@@ -14,18 +14,34 @@ tml::Number::Number(double value) : _type(ValueType::Float) {_value.d = value; }
 // {
 //     if constexpr (std::is_same_v<T, int64_t>) {
 //         if (_type != ValueType::Integer)
-//             throw std::runtime_error("Not an integer");
+//             return static_cast<int64_t>(_value.d);
 //         return _value.i;
 //     } 
 //     else if constexpr (std::is_same_v<T, double>) {
 //         if (_type == ValueType::Integer) 
 //             return static_cast<double>(_value.i);
 //         return _value.d;
-//     } 
+//     }
 //     else {
 //         static_assert(!sizeof(T), "Unsupported type!");
 //     }
 // }
+
+template<>
+int64_t tml::Number::GetValue<int64_t>() const 
+{
+    if (_type != ValueType::Integer)
+        return static_cast<int64_t>(_value.d);
+    return _value.i;
+}
+template<>
+double tml::Number::GetValue<double>() const 
+{
+    if (_type == ValueType::Integer) 
+        return static_cast<double>(_value.i);
+    return _value.d;
+}
+
 
 template <typename T>
 void tml::Number::SetValue(T value) const
@@ -68,6 +84,3 @@ tml::Number& tml::Number::operator=(const T &other)
         static_assert(!sizeof(T), "Unsupported type!");
     }
 }
-
-// template int64_t tml::Number::GetValue<int64_t>() const;
-// template double  tml::Number::GetValue<double>() const;

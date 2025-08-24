@@ -35,21 +35,9 @@ namespace tml
         Number(double value);
 
         template<typename T>
-        T GetValue() const {
-            if constexpr (std::is_same_v<T, int64_t>) {
-                if (_type != ValueType::Integer)
-                    return static_cast<int64_t>(_value.d);
-                return _value.i;
-            } 
-            else if constexpr (std::is_same_v<T, double>) {
-                if (_type == ValueType::Integer) 
-                    return static_cast<double>(_value.i);
-                return _value.d;
-            }
-            else {
-                static_assert(!sizeof(T), "Unsupported type!");
-            }
-        }
+        T GetValue() const;
+        template<> int64_t GetValue<int64_t>() const;
+        template<> double GetValue<double>() const;
         
         template<typename T>
         void SetValue(T value) const;
