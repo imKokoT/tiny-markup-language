@@ -24,10 +24,10 @@ class TML_API TMLObject {
 public:
     /// @brief return true if this TMLObject is T
     template<typename T, typename = std::enable_if_t<IsTMLObj<T>::value>>
-    bool Is();
+    bool Is() const;
 };
 
-class TML_API Number : TMLObject {    
+class TML_API Number : public TMLObject {    
 public:
     enum class ValueType : uint8_t { Integer, Float };
 
@@ -59,6 +59,13 @@ private:
     } _value;
     ValueType _type;
 };
+
+
+template TML_API bool TMLObject::Is<Number>() const;
+// template TML_API bool TMLObject::Is<Bool>() const;
+// template TML_API bool TMLObject::Is<String>() const;
+// template TML_API bool TMLObject::Is<List>() const;
+// template TML_API bool TMLObject::Is<Object>() const;
 
 template int64_t TML_API Number::GetValue<int64_t>() const;
 template int32_t TML_API Number::GetValue<int32_t>() const;
