@@ -4,6 +4,11 @@
 
 namespace tml
 {
+    class Bool;
+    class Number;
+    class String;
+    class List;
+    class Object;
 
     template<typename T>
     struct IsTMLObj : std::disjunction<
@@ -23,14 +28,28 @@ namespace tml
 
     class TML_API Number : TMLObject {    
     public:
-        enum class ValueType { Integer, Float };
+        enum class ValueType : uint8_t { Integer, Float };
 
         Number(const Number& other);
         Number(int64_t value);
         Number(double value);
 
         template<typename T>
-        T GetValue() const;
+        T GetValue() const {
+            if constexpr (std::is_same_v<T, int64_t>) {
+                if (_type != ValueType::Integer)
+                    return static_cast<int64_t>(_value.d);
+                return _value.i;
+            } 
+            else if constexpr (std::is_same_v<T, double>) {
+                if (_type == ValueType::Integer) 
+                    return static_cast<double>(_value.i);
+                return _value.d;
+            }
+            else {
+                static_assert(!sizeof(T), "Unsupported type!");
+            }
+        }
         
         template<typename T>
         void SetValue(T value) const;
