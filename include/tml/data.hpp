@@ -61,8 +61,22 @@ private:
 };
 
 
+class TML_API Bool : public TMLObject {
+    bool _value;
+public:
+    Bool(const Bool& other);
+    Bool(bool value);
+
+    bool GetValue() const;
+    void SetValue(bool value);
+
+    Bool& operator=(const bool& other);
+    Bool& operator=(const Bool& other);
+};
+
+
 template TML_API bool TMLObject::Is<Number>() const;
-// template TML_API bool TMLObject::Is<Bool>() const;
+template TML_API bool TMLObject::Is<Bool>() const;
 // template TML_API bool TMLObject::Is<String>() const;
 // template TML_API bool TMLObject::Is<List>() const;
 // template TML_API bool TMLObject::Is<Object>() const;
