@@ -78,7 +78,7 @@ public:
 
 
 class TML_API String : public TMLObject {
-    wchar_t* _value;
+    wchar_t* _data = nullptr;
     size_t _size;
 public:
     String(const String& other);
@@ -87,16 +87,16 @@ public:
     String(const std::string& other);
     String(const std::wstring& other);
 
-    wchar_t* WGetCString() const;
-    char* GetCString() const;
-
+    wchar_t* GetData() const;
     size_t Length() const;
+    std::string GetString() const;
+    std::wstring GetWString() const;
     
     wchar_t operator[](const size_t index) const;
     String& operator=(const std::wstring& other);
     String& operator=(const std::string& other);
-    String& operator=(wchar_t* other);
-    String& operator=(char* other);
+    String& operator=(const wchar_t* other);
+    String& operator=(const char* other);
     String& operator=(const String& other);
     
     ~String();
