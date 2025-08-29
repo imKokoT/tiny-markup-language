@@ -1,6 +1,8 @@
 #pragma once
 #include"config.hpp"
-#include <type_traits>
+#include<type_traits>
+#include<string>
+
 
 namespace tml
 {
@@ -75,9 +77,35 @@ public:
 };
 
 
+class TML_API String : public TMLObject {
+    wchar_t* _value;
+    size_t _size;
+public:
+    String(const String& other);
+    String(const char* other, const size_t size);
+    String(const wchar_t* other, const size_t size);
+    String(const std::string& other);
+    String(const std::wstring& other);
+
+    wchar_t* WGetCString() const;
+    char* GetCString() const;
+
+    size_t Length() const;
+    
+    wchar_t operator[](const size_t index) const;
+    String& operator=(const std::wstring& other);
+    String& operator=(const std::string& other);
+    String& operator=(wchar_t* other);
+    String& operator=(char* other);
+    String& operator=(const String& other);
+    
+    ~String();
+};
+
+
 template TML_API bool TMLObject::Is<Number>() const;
 template TML_API bool TMLObject::Is<Bool>() const;
-// template TML_API bool TMLObject::Is<String>() const;
+template TML_API bool TMLObject::Is<String>() const;
 // template TML_API bool TMLObject::Is<List>() const;
 // template TML_API bool TMLObject::Is<Object>() const;
 
