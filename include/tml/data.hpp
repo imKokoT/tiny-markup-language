@@ -2,6 +2,7 @@
 #include"config.hpp"
 #include<type_traits>
 #include<string>
+#include<vector>
 
 
 namespace tml
@@ -28,6 +29,7 @@ public:
     template<typename T, typename = std::enable_if_t<IsTMLObj<T>::value>>
     bool Is() const;
 };
+
 
 class TML_API Number : public TMLObject {    
 public:
@@ -103,10 +105,38 @@ public:
 };
 
 
+class TML_API List : public TMLObject {
+public:
+    using containerT = std::vector<TMLObject>;
+    using iterator = containerT::iterator;
+    using const_iterator = containerT::const_iterator;
+private:
+    containerT _values;
+public:
+    List() = default;
+    List(std::initializer_list<TMLObject> init);
+
+    TMLObject& At(size_t index);
+    const TMLObject& At(size_t index) const;
+    void PushBack(const TMLObject& v);
+    void PushBack(TMLObject&& v);
+    void Clear();
+    iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+    size_t Length() const;
+    bool IsEmpty() const;
+
+    TMLObject& operator[](size_t index);
+    const TMLObject& operator[](size_t index) const;
+};
+
+
 template TML_API bool TMLObject::Is<Number>() const;
 template TML_API bool TMLObject::Is<Bool>() const;
 template TML_API bool TMLObject::Is<String>() const;
-// template TML_API bool TMLObject::Is<List>() const;
+template TML_API bool TMLObject::Is<List>() const;
 // template TML_API bool TMLObject::Is<Object>() const;
 
 template int64_t TML_API Number::GetValue<int64_t>() const;
