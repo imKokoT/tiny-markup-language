@@ -3,10 +3,39 @@
 #include<variant>
 #include<string>
 #include<vector>
-#include<map>
+
+namespace tml 
+{
+class Value;
 
 
-namespace tml {
+class TML_API List {
+public:
+    using containerT = std::vector<Value>;
+    using iterator = containerT::iterator;
+    using const_iterator = containerT::const_iterator;
+private:
+    containerT _values;
+public:
+    List() = default;
+    List(std::initializer_list<Value> init);
+
+    Value& At(size_t index);
+    const Value& At(size_t index) const;
+    void PushBack(const Value& v);
+    void PushBack(Value&& v);
+    void Clear();
+    iterator begin();
+    iterator end();
+    const_iterator begin() const;
+    const_iterator end() const;
+    size_t Length() const;
+    bool IsEmpty() const;
+
+    Value& operator[](size_t index);
+    const Value& operator[](size_t index) const;
+};
+
 
 class TML_API Value {
     enum class Type { Null, Bool, Number, String, List, Object };
@@ -16,9 +45,8 @@ class TML_API Value {
         bool,
         int64_t, 
         double,
-        std::string
-        // std::vector<Value>,
-        // std::map<std::string, Value>
+        std::string,
+        List
     > _data;
 
 public:
@@ -32,8 +60,8 @@ public:
     Value(const char*);
     Value(const std::string&);
     Value(std::string&&);
-    // Value(std::initializer_list<Value>);
-    // Value(std::initializer_list<std::pair<std::string, Value>>);
+    Value(const List&);
+    Value(List&&);
 };
 
 }; // namespace tml
