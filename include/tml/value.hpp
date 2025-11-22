@@ -16,18 +16,17 @@ class TML_API Value {
         bool,
         int64_t, 
         double,
-        std::string,
+        std::string
         // std::vector<Value>,
         // std::map<std::string, Value>
     > _data;
 
 public:
     Value(); // Null
+    Value(std::nullptr_t);
     Value(bool);
     Value(int);
-    Value(uint32_t);
     Value(int64_t);
-    Value(uint64_t);
     Value(float);
     Value(double);
     Value(const char*);

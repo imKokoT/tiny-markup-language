@@ -34,7 +34,7 @@ else:
 
 # --- SCAN SRC ------------------------------------------------------------------------------------
 VariantDir('build/obj/tml', 'src', duplicate=0)
-src = Glob('build/obj/tml/**/*.cpp')
+src = Glob('build/obj/tml/*.cpp') + Glob('build/obj/tml/*/*.cpp')
 
 # --- SCAN TESTS ----------------------------------------------------------------------------------
 VariantDir('build/obj/tests', 'tests', duplicate=0)
