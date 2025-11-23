@@ -8,25 +8,25 @@ using containerT = std::map<std::string, Value>;
 using iterator = containerT::iterator;
 using const_iterator = containerT::const_iterator;
 
-bool isLetter(char c) {
+
+bool _isLetter(char c) { 
     return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
-
-bool isDigit(char c) {
+bool _isDigit(char c) {
     return (c >= '0' && c <= '9');
 }
 
+
 bool Object::isValidKey(const std::string& key) {
-    if (key.empty() || !isLetter(key[0]))
+    if (key.empty() || !_isLetter(key[0]))
         return false;
 
     for (char c : key.substr(1))
-        if (!isLetter(c) && !isDigit(c) && c != '_')
+        if (!_isLetter(c) && !_isDigit(c) && c != '_')
             return false;
     
     return true;
 }
-
 
 Object::Object(std::initializer_list<containerT::value_type> init) {
     for (auto p : init) {

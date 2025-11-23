@@ -103,6 +103,32 @@ public:
     Value(List&&);
     Value(const Object&);
     Value(Object&&);
+
+    bool isNull()   const;
+    bool isBool()   const;
+    bool isNumber() const;
+    bool isString() const;
+    bool isList()   const;
+    bool isObject() const;
+    Type getType() const;
+
+    template<typename T>
+    T& As() { return std::get<T>(_data); }
+    template<typename T>
+    const T& As() const { return std::get<T>(_data); }
+
+    bool&       asBool();
+    const bool& asBool() const;
+    int64_t&       asInt();
+    const int64_t& asInt() const;
+    double&       asDouble();
+    const double& asDouble() const;
+    std::string&       asString();
+    const std::string& asString() const;
+    List&       asList();
+    const List& asList() const;
+    Object&       asObject();
+    const Object& asObject() const;
 };
 
 }; // namespace tml
