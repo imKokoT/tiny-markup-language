@@ -76,8 +76,6 @@ public:
 
 
 class TML_API Value {
-    enum class Type { Null, Bool, Number, String, List, Object };
-
     std::variant<
         std::monostate,
         bool,
@@ -87,7 +85,6 @@ class TML_API Value {
         List,
         Object
     > _data;
-
 public:
     Value(); // Null
     Value(std::nullptr_t);
@@ -110,7 +107,6 @@ public:
     bool isString() const;
     bool isList()   const;
     bool isObject() const;
-    Type getType() const;
 
     template<typename T>
     T& As() { return std::get<T>(_data); }
