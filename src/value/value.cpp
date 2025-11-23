@@ -14,5 +14,7 @@ Value::Value(const std::string & v) : _data(v) {}
 Value::Value(std::string && v)      : _data(std::move(v)) {}
 Value::Value(const List& v)         : _data(v) {}
 Value::Value(List&& v)              : _data(std::move(v)) {}
+Value::Value(const Object& v)       : _data(v) {}
+Value::Value(Object&& v)            : _data(std::move(v)) {}
 
 } // namespace tml

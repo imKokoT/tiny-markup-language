@@ -27,6 +27,7 @@ public:
     size_t Length() const;
     void Insert(const std::string& key, const Value& value);
     void Erase(const std::string& key); 
+    void Clear();
     
     iterator Find(const std::string& key);
     const_iterator Find(const std::string& key) const;
