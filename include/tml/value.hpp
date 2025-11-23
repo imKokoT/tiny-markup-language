@@ -19,7 +19,7 @@ private:
     containerT _values;
 public:
     Object() = default;
-    Object(std::initializer_list<std::pair<std::string, Value>>);
+    Object(std::initializer_list<containerT::value_type>);
 
     Value& At(const std::string& key);
     const Value& At(const std::string& key) const;
