@@ -5,10 +5,10 @@
 
 namespace tml
 {
-
 using containerT = std::vector<Value>;
 using iterator = containerT::iterator;
 using const_iterator = containerT::const_iterator;
+
 
 List::List(std::initializer_list<Value> init) : _values(init) {}
 
@@ -38,4 +38,8 @@ const_iterator List::end() const { return _values.end(); }
 size_t List::Length() const { return _values.size(); }
 bool List::IsEmpty() const { return _values.empty(); }
 
+Value &List::operator[](size_t index) { return At(index); }
+const Value &List::operator[](size_t index) const { return At(index); }
+
 } // namespace tml
+
