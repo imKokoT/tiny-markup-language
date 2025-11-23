@@ -16,7 +16,7 @@ bool isDigit(char c) {
     return (c >= '0' && c <= '9');
 }
 
-bool isValidKey(const std::string& key) {
+bool Object::isValidKey(const std::string& key) {
     if (key.empty() || !isLetter(key[0]))
         return false;
 
