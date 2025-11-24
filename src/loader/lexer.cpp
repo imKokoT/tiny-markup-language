@@ -83,7 +83,7 @@ void Lexer::readNumber() {
     if (*delta == 'e' || *delta == 'E')
         readUnQuotedString(); // fall to string
 
-    while (delta < end || isEndlOrSpace(*delta)) {
+    while (!isEndlOrSpace(*delta) && delta < end) {
         if (*delta == '.')
             if(isFloat)
                 readUnQuotedString(); // fall to string
@@ -120,6 +120,16 @@ const std::vector<Token>& Lexer::lex()
         char next = *(cursor + 1);
 
         switch (c) {
+            case ' ':
+            case '\t':
+            case ';':
+                col++; cursor++;
+                break;
+            case '\n':
+                cursor++;
+                col = 1; line++;
+                break;
+
             case '"':
             case '\'':
                 readQuotedString(c);
