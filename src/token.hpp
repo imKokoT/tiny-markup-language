@@ -1,30 +1,31 @@
 #pragma once
 #include"config.hpp"
+#include<string_view>
 
-enum class TokenType {
-    End,        // semi or \n
-    Identifier,
-    Eq,         // =
-    Colon,      // :
-    Coma,       // ,
-    
-    LBrace, RBrace,     // { }
-    LBracket, RBracket, // [ ]
-    LQuote, RQuote,     // quotes
-    
-    Null,
-    True, False,
-    Integer,
-    Float,
-    StringBody
-};
 
 struct Token {
-    int64 line, col;
-    TokenType type;
-    wchar* value;
+    enum class Type {
+        End,        // semi or \n
+        Identifier,
+        Eq,         // =
+        Colon,      // :
+        Coma,       // ,
+        
+        LBrace, RBrace,     // { }
+        LBracket, RBracket, // [ ]
+        LQuote, RQuote,     // quotes
+        
+        Null,
+        True, False,
+        Integer,
+        Float,
+        StringBody
+    };
 
-    Token(TokenType token, int64 line, int64 col);
-    Token(TokenType token, int64 line, int64 col, const wchar* value);
-    ~Token();
+    int64 line, col;
+    Type type;
+    std::string_view value;
+
+    Token(Type token, int64 line, int64 col);
+    Token(Type token, int64 line, int64 col, std::string_view value);
 };

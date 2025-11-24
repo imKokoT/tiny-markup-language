@@ -1,19 +1,15 @@
 #include "token.hpp"
+#include <string_view>
 
-Token::Token(TokenType token, int64 line, int64 col) {
-    type = token;
-    line = line;
-    col = col;
-}
 
-Token::Token(TokenType token, int64 line, int64 col, const wchar *value) {
-    type = token;
-    line = line;
-    col = col;
-    value = value;
-}
+Token::Token(Type token, int64 line_, int64 col_) 
+    : type(token),
+      line(line_),
+      col(col_) {}
 
-Token::~Token() {
-    if (value != nullptr)
-        delete[] value;
-}
+
+Token::Token(Type token, int64 line_, int64 col_, std::string_view value_)
+    : type(token),
+      line(line_),
+      col(col_),
+      value(value_) {}
