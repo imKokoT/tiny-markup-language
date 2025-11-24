@@ -126,6 +126,7 @@ TML allows next escape codes:
 - `\xffff` -> 2 byte char
 - `\e` -> escape code char
 - `\,` -> `,`
+- `\#` -> `#`
 
 TML supports multiline *String* syntax but with limitations. Multiline string uses indents  
 

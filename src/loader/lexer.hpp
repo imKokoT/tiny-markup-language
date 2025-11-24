@@ -2,6 +2,7 @@
 #include"../token.hpp"
 #include<vector>
 #include<string_view>
+#include<string>
 
 
 class Lexer {
@@ -12,6 +13,13 @@ class Lexer {
 
     void emit(Token::Type type);
     void emit(Token::Type type, std::string_view value);
+
+    void readIdentifierOrConst();
+    void readQuotedString(char quote);
+    void readUnQuotedString();
+    void readNumber();
+
+    void error(std::string msg);
 public:
     Lexer(std::string_view src) : cursor(src.data()), end(cursor + src.size()) {}
 

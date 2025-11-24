@@ -4,7 +4,7 @@
 
 
 struct Token {
-    enum class Type {
+    enum Type {
         End,        // semi or \n
         Identifier,
         Eq,         // =
