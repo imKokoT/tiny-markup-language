@@ -22,7 +22,7 @@ struct Token {
         True, False,
         Integer,
         Float,
-        StringBody
+        String
     };
 
     int64 line, col;

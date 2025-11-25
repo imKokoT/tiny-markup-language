@@ -32,8 +32,13 @@ inline bool isNumStart(char sign, char next) {
 }
 
 /// @brief returns true if c is `␣;\\n\\t` 
-inline bool isEndlOrSpace(char c){
+inline bool isEndlOrSpace(char c) {
     return (c == ' ' || c == ';' || c == '\n' || c == '\t');
+}
+
+/// @brief returns true if c is `;\n` 
+inline bool isEnd(char c) {
+    return (c == ';' || c == '\n');
 }
 
 
@@ -91,7 +96,24 @@ void Lexer::readQuotedString(char quote) {
 
 void Lexer::readUnQuotedString()
 {
-    error("not implemented");
+    const char* start = cursor;
+    const char* delta = cursor;
+    size_t len = 0;
+    size_t whitespace = 0; 
+
+    while (!isEnd(*delta) && delta < end) {
+        char c = *delta;
+        
+        whitespace++;
+        if (!(c == ' ' || c == '\t'))
+            whitespace = 0;
+
+        delta++; len++;
+    }
+
+    emit(Token::String, std::string_view(start, len-whitespace));
+    col += len;
+    cursor = delta;
 }
 
 void Lexer::readNumber() {
