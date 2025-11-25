@@ -142,6 +142,58 @@ void Lexer::readNumber() {
     cursor = delta;
 }
 
+
+void Lexer::readIndentedObject() {
+    while (cursor < end) {
+        char c = *cursor;
+        char next = *(cursor + 1);
+
+        switch (c) {
+            case ' ':
+            case '\t':
+                col++; cursor++;
+                break;
+            case ';':
+                emit(Token::EOL);
+                col++; cursor++;
+                break;
+            case '\n':
+                emit(Token::EOL);
+                col = 1; line++; cursor++;
+                break;
+
+            case '{':
+                error("not implemented");
+                break;
+            case '[':
+                error("not implemented");
+                break;
+            case ':':
+                error("not implemented");
+                break;
+            case '=':
+                emit(Token::Eq);
+                col++; cursor++;
+                break;
+
+            case '"':
+            case '\'':
+                readQuotedString(c);
+                break;
+            default:
+                if (isLetter(c) && tokens.back().type != Token::Eq) 
+                    readIdentifierOrConst();
+                else if (isNumStart(c, next)) 
+                    readNumber();
+                else 
+                    readUnQuotedString();
+        }
+    }
+
+    emit(Token::RBrace);
+}
+
+
 ////////////////////////////////////////////////////////////
 //  ENTRY
 ////////////////////////////////////////////////////////////
@@ -152,6 +204,7 @@ const std::vector<Token>& Lexer::lex()
         char next = *(cursor + 1);
 
         switch (c) {
+            // whitespaces
             case ' ':
             case '\t':
             case ';':
@@ -174,8 +227,16 @@ const std::vector<Token>& Lexer::lex()
                 readQuotedString(c);
                 break;
             default:
-                if (isNumStart(c, next)) readNumber();
-                else if (isLetter(c)) readIdentifierOrConst();
+                if (isLetter(c)){
+                    readIdentifierOrConst();
+                    if (tokens.back().type == Token::Identifier){
+                        Token i = std::move(tokens.back());
+                        tokens.back() = Token(Token::LBrace, line, col);
+                        tokens.push_back(std::move(i));
+                        readIndentedObject();
+                    }
+                } 
+                else if (isNumStart(c, next)) readNumber();
                 else readUnQuotedString();
         }
     }

@@ -16,6 +16,9 @@ class Lexer {
     void emit(Token::Type type);
     void emit(Token::Type type, std::string_view value);
 
+    void readIndentedObject();
+    void readBracedObject();
+    void readList();
     void readIdentifierOrConst();
     void readQuotedString(char quote);
     void readUnQuotedString();
