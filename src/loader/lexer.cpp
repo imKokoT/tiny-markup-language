@@ -58,7 +58,31 @@ void Lexer::error(std::string msg) {
 ////////////////////////////////////////////////////////////
 
 void Lexer::readIdentifierOrConst() {
-    error("not implemented");
+    const char* start = cursor;
+    const char* delta = cursor;
+    size_t len = 0;
+
+    while (!isEndlOrSpace(*delta) && delta < end) {
+        if (!(*delta == '.' || *delta == '_' || *delta == '-' || isLetter(*delta) || isDigit(*delta))){
+            readUnQuotedString(); // fall to string
+            return;
+        }
+        delta++; len++;
+    }
+
+    // check for constants
+    std::string_view i(start, len);
+    if (i == "T" || i == "true")
+        emit(Token::True);
+    else if (i == "F" || i == "false")
+        emit(Token::False);
+    else if (i == "null")
+        emit(Token::Null);
+    // is identifier
+    else
+        emit(Token::Identifier, i);
+    col += len;
+    cursor = delta;
 }
 
 void Lexer::readQuotedString(char quote) {
@@ -73,31 +97,39 @@ void Lexer::readUnQuotedString()
 void Lexer::readNumber() {
     const char* start = cursor;
     const char* delta = cursor;
+    size_t len = 1;
     bool eFound = false;
     bool isFloat = *start == '.'; // first can be `.`
     
     // skip first checked char
     delta++;
-    size_t len = 1;
 
-    if (*delta == 'e' || *delta == 'E')
+    if (*delta == 'e' || *delta == 'E') {
         readUnQuotedString(); // fall to string
+        return;
+    }
 
     while (!isEndlOrSpace(*delta) && delta < end) {
         if (*delta == '.')
-            if(isFloat)
+            if(isFloat) {
                 readUnQuotedString(); // fall to string
+                return;
+            }
             else
                 isFloat = true;
 
         else if (*delta == 'e' || *delta == 'E')
-            if (eFound)
+            if (eFound) {
                 readUnQuotedString(); // fall to string
+                return;
+            }
             else
                 eFound = isFloat = true;
 
-        else if (!isDigit(*delta))
+        else if (!isDigit(*delta)){
             readUnQuotedString(); // fall to string
+            return;
+        }
 
         delta++; len++;
     }
@@ -130,12 +162,20 @@ const std::vector<Token>& Lexer::lex()
                 col = 1; line++;
                 break;
 
+            case '{':
+                error("not implemented");
+                break;
+            case '[':
+                error("not implemented");
+                break;
+
             case '"':
             case '\'':
                 readQuotedString(c);
                 break;
             default:
-                if (isNumStart(c, next)) readNumber(); 
+                if (isNumStart(c, next)) readNumber();
+                else if (isLetter(c)) readIdentifierOrConst();
                 else readUnQuotedString();
         }
     }

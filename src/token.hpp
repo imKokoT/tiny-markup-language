@@ -5,8 +5,11 @@
 
 struct Token {
     enum Type {
-        End,        // semi or \n
+        End,        // EOF
+        EOL,        // semi or \n
+        
         Identifier,
+        
         Eq,         // =
         Colon,      // :
         Coma,       // ,

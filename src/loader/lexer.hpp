@@ -11,6 +11,8 @@ class Lexer {
     size_t line = 1, col = 1;
     std::vector<Token> tokens;
 
+    std::vector<std::pair<int, char>> indentStack;
+
     void emit(Token::Type type);
     void emit(Token::Type type, std::string_view value);
 
