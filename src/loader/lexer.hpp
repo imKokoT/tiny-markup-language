@@ -16,6 +16,12 @@ class Lexer {
     void emit(Token::Type type);
     void emit(Token::Type type, std::string_view value);
 
+    // helper
+    void readUntilEnd();
+    void pushIndentation();
+    void readIndentation();
+
+    // main
     void readIndentedObject();
     void readBracedObject();
     void readList();

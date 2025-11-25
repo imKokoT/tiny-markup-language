@@ -59,6 +59,46 @@ void Lexer::error(std::string msg) {
 
 
 ////////////////////////////////////////////////////////////
+//  HELPER READERS
+////////////////////////////////////////////////////////////
+
+void Lexer::readUntilEnd() {
+    error("not implemented");
+}
+
+void Lexer::pushIndentation()
+{
+    const char* start = cursor;
+    const char* delta = cursor;
+    size_t len = 0;
+    char iSymbol = *cursor;
+
+    while (delta < end) {
+        char c = *delta;
+        if ((iSymbol == ' ' && c == '\t') || (iSymbol == '\t' && c == ' '))
+            error("mix of indentation symbols is not allowed");
+        else if (c != ' ' || c != '\t')
+            break;
+
+        delta++; len++;
+    }
+
+    auto& last = indentStack.back();
+    if (last.first != -1 && last.second != iSymbol)
+        error("child's indentation symbol must be same as parent's");
+    else if (last.first >= (int)len)
+        error("child's indentation length must be bigger than parent's");
+    
+    indentStack.push_back(std::pair(len, iSymbol));
+    cursor = delta;
+    col += len;
+}
+
+void Lexer::readIndentation() {
+    error("not implemented");
+}
+
+////////////////////////////////////////////////////////////
 //  READ DATA TYPES
 ////////////////////////////////////////////////////////////
 
@@ -166,6 +206,9 @@ void Lexer::readNumber() {
 
 
 void Lexer::readIndentedObject() {
+    emit(Token::LBrace);
+    pushIndentation();
+
     while (cursor < end) {
         char c = *cursor;
         char next = *(cursor + 1);
@@ -190,9 +233,15 @@ void Lexer::readIndentedObject() {
             case '[':
                 error("not implemented");
                 break;
-            case ':':
-                error("not implemented");
-                break;
+            case ':': { // read indented object
+                emit(Token::Eq);
+                col++; cursor++;
+                readUntilEnd();
+                emit(Token::LBrace);
+                readIndentation();
+                readIndentedObject();
+            } break;
+
             case '=':
                 emit(Token::Eq);
                 col++; cursor++;
@@ -212,6 +261,7 @@ void Lexer::readIndentedObject() {
         }
     }
 
+    indentStack.pop_back();
     emit(Token::RBrace);
 }
 
@@ -219,8 +269,11 @@ void Lexer::readIndentedObject() {
 ////////////////////////////////////////////////////////////
 //  ENTRY
 ////////////////////////////////////////////////////////////
+
 const std::vector<Token>& Lexer::lex()
 {
+    indentStack.push_back({-1, ' '}); // push root indentation
+
     while (cursor < end) {
         char c = *cursor;
         char next = *(cursor + 1);
@@ -252,9 +305,13 @@ const std::vector<Token>& Lexer::lex()
                 if (isLetter(c)){
                     readIdentifierOrConst();
                     if (tokens.back().type == Token::Identifier){
-                        Token i = std::move(tokens.back());
-                        tokens.back() = Token(Token::LBrace, line, col);
-                        tokens.push_back(std::move(i));
+                        // Token i = std::move(tokens.back());
+                        // tokens.back() = Token(Token::LBrace, line, col);
+                        // tokens.push_back(std::move(i));
+
+                        // pop it due simplifying reading indented object
+                        cursor -= col - tokens.back().col;
+                        tokens.pop_back();
                         readIndentedObject();
                     }
                 } 
