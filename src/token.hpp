@@ -25,10 +25,10 @@ struct Token {
         String
     };
 
-    int64 line, col;
+    size_t line, col;
     Type type;
     std::string_view value;
 
-    Token(Type token, int64 line, int64 col);
-    Token(Type token, int64 line, int64 col, std::string_view value);
+    Token(Type token, size_t line, size_t col);
+    Token(Type token, size_t line, size_t col, std::string_view value);
 };

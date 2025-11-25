@@ -2,13 +2,13 @@
 #include <string_view>
 
 
-Token::Token(Type token, int64 line_, int64 col_) 
+Token::Token(Type token, size_t line_, size_t col_) 
     : type(token),
       line(line_),
       col(col_) {}
 
 
-Token::Token(Type token, int64 line_, int64 col_, std::string_view value_)
+Token::Token(Type token, size_t line_, size_t col_, std::string_view value_)
     : type(token),
       line(line_),
       col(col_),
