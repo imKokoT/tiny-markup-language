@@ -19,7 +19,7 @@ class Lexer {
     // helper
     void readUntilEnd();
     void pushIndentation();
-    void readIndentation();
+    void readIndentation(Token::Type dedentToken);
 
     // main
     void readIndentedObject();
