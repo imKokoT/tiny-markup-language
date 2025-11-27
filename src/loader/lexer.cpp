@@ -204,7 +204,23 @@ void Lexer::readIdentifierOrConst() {
 }
 
 void Lexer::readQuotedString(char quote) {
-    error("not implemented");
+    const char* start = cursor;
+    const char* delta = cursor;
+    size_t len = 0;
+    
+    delta++;
+    while (delta < end) {
+        char c = *delta;
+        if (c == '\n')
+            error("string must be closed");
+        else if (c == quote && *(delta-1) != '\\')
+            break;
+        len++; delta++;
+    }
+
+    emit(Token::String, std::string_view(start+1, len));
+    cursor = delta+1;
+    col += len+1;
 }
 
 void Lexer::readUnQuotedString()
