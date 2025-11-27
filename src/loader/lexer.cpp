@@ -62,7 +62,9 @@ void Lexer::error(std::string msg) {
 //  HELPER READERS
 ////////////////////////////////////////////////////////////
 
-void Lexer::readUntilEnd() {
+/// @brief reads whitespace until EOL 
+/// @returns true if found not EOL symbol 
+bool Lexer::readUntilEnd() {
     const char* start = cursor;
     const char* delta = cursor;
     size_t len = 0;
@@ -73,7 +75,8 @@ void Lexer::readUntilEnd() {
 
         if (!(c == ' ' || c == '\t')){
             col += len;
-            error("unexpected symbol '" + std::to_string(c) + "'");
+            cursor = delta;
+            return true;
         }
 
         len++; delta++;
@@ -82,6 +85,7 @@ void Lexer::readUntilEnd() {
     cursor = delta+1;
     col = 1;
     line++;
+    return false;
 }
 
 void Lexer::pushIndentation()
@@ -90,14 +94,24 @@ void Lexer::pushIndentation()
     const char* delta = cursor;
     size_t len = 0;
     char iSymbol = *cursor;
-
+    
     while (delta < end) {
         char c = *delta;
         if ((iSymbol == ' ' && c == '\t') || (iSymbol == '\t' && c == ' '))
             error("mix of indentation symbols is not allowed");
-        else if (c == '\n')
-            // TODO: handle EOL at pushIndentation()
-            error("not implemented");
+        else if (c == '\n') { // whitespace lines
+            delta++; line++; col = 1;
+            cursor = delta;
+retry:
+            if (readUntilEnd()){
+                len = cursor - delta;
+                delta = cursor;
+                col = 1;
+                break;
+            }
+            delta = cursor;
+            goto retry;
+        }
         else if (c != ' ' && c != '\t')
             break;
 
@@ -294,7 +308,8 @@ void Lexer::readIndentedObject() {
                 emit(Token::Eq);
                 emit(Token::LBrace);
                 col++; cursor++;
-                readUntilEnd();
+                if (readUntilEnd()) 
+                    error("unexpected symbol '" + std::to_string(*cursor) + "'");
                 pushIndentation();
             } break;
 

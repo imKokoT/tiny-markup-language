@@ -17,7 +17,7 @@ class Lexer {
     void emit(Token::Type type, std::string_view value);
 
     // helper
-    void readUntilEnd();
+    bool readUntilEnd();
     void pushIndentation();
     void readIndentation(Token::Type dedentToken);
 
