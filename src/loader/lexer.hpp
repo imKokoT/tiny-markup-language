@@ -27,6 +27,7 @@ class Lexer {
     void readList();
     void readIdentifierOrConst();
     void readQuotedString(char quote);
+    void readMultilineString(char quote);
     void readUnQuotedString();
     void readNumber();
 

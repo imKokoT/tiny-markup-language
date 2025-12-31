@@ -207,7 +207,7 @@ void Lexer::readQuotedString(char quote) {
     const char* start = cursor;
     const char* delta = cursor;
     size_t len = 0;
-    
+
     delta++;
     while (delta < end) {
         char c = *delta;
@@ -223,8 +223,7 @@ void Lexer::readQuotedString(char quote) {
     col += len+1;
 }
 
-void Lexer::readUnQuotedString()
-{
+void Lexer::readUnQuotedString() {
     const char* start = cursor;
     const char* delta = cursor;
     size_t len = 0;
@@ -243,6 +242,35 @@ void Lexer::readUnQuotedString()
     emit(Token::String, std::string_view(start, len-whitespace));
     col += len;
     cursor = delta;
+}
+
+void Lexer::readMultilineString(char quote) {
+    const char* start = cursor;
+    const char* delta = cursor;
+    const char* pieceStart = nullptr; // TODO: evil stuff
+    size_t deltaIndent = 1;
+    char iSymbol = *cursor;
+
+    while(cursor < end) {
+        char c = *delta;
+        if (deltaIndent < col && ((iSymbol == ' ' && c == '\t') || (iSymbol == '\t' && c == ' ')))
+            error("mix of indentation symbols is not allowed");
+        else if (deltaIndent < col && c != iSymbol)
+            error("wrong multiline string indentation");
+        else if (c == quote && *(delta-1) != '\\')
+            break;
+        else if (col == deltaIndent)
+            pieceStart = delta;
+        else if (c == '\n') {
+            deltaIndent = 1;
+            line++;
+            emit(Token::StringPiece, std::string_view(pieceStart, delta - pieceStart));
+        }
+        deltaIndent++; delta++;
+    }
+
+    col = deltaIndent;
+    cursor = delta + 1;
 }
 
 void Lexer::readNumber() {
@@ -382,17 +410,25 @@ const std::vector<Token>& Lexer::lex()
                 break;
 
             case '"':
-            case '\'':
-                readQuotedString(c);
-                break;
+            case '\'':{
+                const char* start = cursor;
+                size_t dcol = col;
+
+                // TODO: may optimize later...
+                cursor++; col++;
+                if (readUntilEnd()){
+                    col = dcol; cursor = start;    
+                    readQuotedString(c);
+                }
+                else {
+                    col = dcol;
+                    readMultilineString(c);
+                }
+            } break;
             default:
                 if (isLetter(c)){
                     readIdentifierOrConst();
-                    if (tokens.back().type == Token::Identifier){
-                        // Token i = std::move(tokens.back());
-                        // tokens.back() = Token(Token::LBrace, line, col);
-                        // tokens.push_back(std::move(i));
-
+                    if (tokens.back().type == Token::Identifier) {
                         // pop it due simplifying reading indented object
                         cursor -= col - tokens.back().col;
                         tokens.pop_back();

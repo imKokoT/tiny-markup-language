@@ -143,7 +143,7 @@ multiline = "           # open quote; its indent - start pos for string lines
 
 bad-multiline = "line 1    # parse error
             line 2         # parse error
-                line 3"    # parse error
+                line 3"    # not recommended
 ```
 
 ### Object

@@ -22,7 +22,8 @@ struct Token {
         True, False,
         Integer,
         Float,
-        String
+        String,
+        StringPiece,    // for multiline string
     };
 
     size_t line, col;
