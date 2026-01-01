@@ -390,6 +390,78 @@ void Lexer::readIndentedObject() {
     }
 }
 
+void Lexer::readList() {
+    int nesting = 1;
+
+    while (cursor < end && nesting > 0) {
+        char c = *cursor;
+
+        switch (c) {
+            // whitespaces
+            case ' ':
+            case '\t':
+            case ';':
+                col++; cursor++;
+                break;
+            case '\n':
+                cursor++;
+                col = 1; line++;
+                break;
+
+            case ',':
+                emit(Token::Coma);
+                col++; cursor++;
+            case '[':
+                emit(Token::LBracket);
+                nesting++;
+                col++; cursor++;
+                break;
+            case ']':
+                emit(Token::RBracket);
+                nesting--;
+                col++; cursor++;
+                break;
+            
+            case '{':
+                error("not implemented");
+                break;
+            
+            case '`':
+            case '"':
+            case '\'': {
+                const char* start = cursor;
+                size_t dcol = col;
+
+                // TODO: may optimize later...
+                cursor++; col++;
+                if (readUntilEnd()) {
+                    col = dcol; cursor = start;
+                    readQuotedString(c);
+                }
+                else {
+                    col = dcol;
+                    readMultilineString(c);
+                }
+            } break;
+
+            default: {
+                if (isLetter(c))
+                    readIdentifierOrConst();
+                else if (isNumStart(c, *(cursor + 1)))
+                    readNumber();
+                else {
+                    readUnQuotedString();
+                    break; // spagetty exit)
+                }
+
+                error("unexpected symbol '" + std::to_string(c) + "'");
+            } break;
+        }
+    }
+
+    if (nesting > 0)
+        error("list must be closed");
+}
 
 ////////////////////////////////////////////////////////////
 //  ENTRY
@@ -419,7 +491,9 @@ const std::vector<Token>& Lexer::lex()
                 error("not implemented");
                 break;
             case '[':
-                error("not implemented");
+                emit(Token::LBracket);
+                col++; cursor++;
+                readList();
                 break;
 
             case '`':
