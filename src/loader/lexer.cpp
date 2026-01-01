@@ -253,16 +253,16 @@ void Lexer::readMultilineString(char quote) {
 
     while(cursor < end) {
         char c = *delta;
-        if (deltaIndent < col && ((iSymbol == ' ' && c == '\t') || (iSymbol == '\t' && c == ' ')))
+        if (c == quote && *(delta-1) != '\\')
+            break;
+        else if (deltaIndent < col && ((iSymbol == ' ' && c == '\t') || (iSymbol == '\t' && c == ' ')))
             error("mix of indentation symbols is not allowed");
         else if (deltaIndent < col && c != iSymbol)
             error("wrong multiline string indentation");
-        else if (c == quote && *(delta-1) != '\\')
-            break;
         else if (col == deltaIndent)
             pieceStart = delta;
         else if (c == '\n') {
-            deltaIndent = 1;
+            deltaIndent = 0;
             line++;
             emit(Token::StringPiece, std::string_view(pieceStart, delta - pieceStart));
         }
@@ -363,9 +363,21 @@ void Lexer::readIndentedObject() {
                 break;
 
             case '"':
-            case '\'':
-                readQuotedString(c);
-                break;
+            case '\'': {
+                const char* start = cursor;
+                size_t dcol = col;
+
+                // TODO: may optimize later...
+                cursor++; col++;
+                if (readUntilEnd()){
+                    col = dcol; cursor = start;    
+                    readQuotedString(c);
+                }
+                else {
+                    col = dcol;
+                    readMultilineString(c);
+                }
+            } break;
             default:
                 if (isLetter(c) && tokens.back().type != Token::Eq) 
                     readIdentifierOrConst();
@@ -410,7 +422,7 @@ const std::vector<Token>& Lexer::lex()
                 break;
 
             case '"':
-            case '\'':{
+            case '\'': {
                 const char* start = cursor;
                 size_t dcol = col;
 
