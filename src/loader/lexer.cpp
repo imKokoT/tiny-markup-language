@@ -362,6 +362,7 @@ void Lexer::readIndentedObject() {
                 col++; cursor++;
                 break;
 
+            case '`':
             case '"':
             case '\'': {
                 const char* start = cursor;
@@ -421,6 +422,7 @@ const std::vector<Token>& Lexer::lex()
                 error("not implemented");
                 break;
 
+            case '`':
             case '"':
             case '\'': {
                 const char* start = cursor;

@@ -94,7 +94,7 @@ null_type = null     # or nothing
 
 ### String
 
-String starts and ends from `'` or `"`.
+String starts and ends from `'`, `` ` `` or `"`.
 Also TML supports strings without quotes. 
 
 Example:
@@ -117,6 +117,7 @@ TML allows next escape codes:
 - `\t` -> tab
 - `\"` -> `"`
 - `\'` -> `'`
+- `` \` `` -> `` ` ``
 - `\b` -> backspace
 - `\v` -> vertical tab
 - `\f` -> formfeed
